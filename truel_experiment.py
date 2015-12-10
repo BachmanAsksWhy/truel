@@ -44,9 +44,11 @@ def get_num_experiments():
 	return num_experiments
 
 def get_results():
+	global results
 	return results
 
 def get_shooters():
+	global shooters
 	return shooters
 
 def get_num_shooters():
@@ -252,9 +254,9 @@ def main():
         
 
 	#Experiment
-	plt.xlabel('Number of People Who Matched')
-	plt.ylabel('Matches per Experiment')
-	plt.title('Histogram of Coat Check Experiment, %d People' %num_people)
+	plt.xlabel('Number of Wins per Shooter')
+	plt.ylabel('Wins per Experiment')
+	plt.title('Histogram of Truel Experiment, %d People' %num_people)
 
 	plt.hist(plot_results, bins)
 	plt.show()
