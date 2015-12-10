@@ -9,7 +9,7 @@ import random
 import copy
 import operator
 import pprint as pprint
-# import michael
+import expectedBullets
 
 results = {'Shooter 1' : 0, 'Shooter 2' : 0, 'Shooter 3' : 0} #value = number of times shooter wins
 shooters = {'Shooter 1' : 1.0/3, 'Shooter 2' : 2.0/3, 'Shooter 3' : 1} #value = shooter accuracy
