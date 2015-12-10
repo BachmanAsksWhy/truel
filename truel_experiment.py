@@ -1,6 +1,6 @@
 #Britt Binler
-#CIT 592, HW 6: Simulation
-#October 2015
+#CIT 592, Truel Simulation
+#Fall 2015
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ import random
 import copy
 import operator
 import pprint as pprint
-#import expectedBullets
+import expectedBullets
 
 results = {'Shooter 1' : 0, 'Shooter 2' : 0, 'Shooter 3' : 0} #value = number of times shooter wins
 shooters = {'Shooter 1' : 1.0/3, 'Shooter 2' : 2.0/3, 'Shooter 3' : 1} #value = shooter accuracy
@@ -38,6 +38,10 @@ def get_second_best_shooter(shooters, shooter): #shooter a string, shooters is a
 	del shooters_copy[best_shooter]
 	best_shooter = max(shooters_copy, key=shooters_copy.get) #find the second best alive shooter
 	return best_shooter
+
+def get_bullet_results():
+	global bullet_results
+	return bullet_results
 
 def get_num_experiments():
 	num_experiments = int(input('How many rounds of shooting would you like in this Truel? '))	
@@ -244,10 +248,6 @@ def main():
 	results = sorted(results.items()) 
 	for person in results: 
 		print(person[0], person[1])
-
-
-	print('BULLETS:', bullet_results)
-
 
 
 	bins = list(range(1, num_people + 2))
