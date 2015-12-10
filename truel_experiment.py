@@ -223,7 +223,6 @@ def main():
 	plt.xlabel('Number of People Who Matched')
 	plt.ylabel('Matches per Experiment')
 	plt.title('Histogram of Coat Check Experiment, %d People' %num_people)
-	plt.plot(bins) #set x axis
 
 	plt.hist(plot_results, bins)
 	plt.show()
