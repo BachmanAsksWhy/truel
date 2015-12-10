@@ -175,6 +175,15 @@ def conduct_experiment(n_experiments, strategy_choice, shooter):
 
 	return plot_results
 
+def get_num_experiments():
+	return num_experiments
+
+def get_results():
+	return results
+
+def get_shooters():
+	return shooters
+
 def main():		
 	global results
 	num_people = 3
