@@ -56,7 +56,8 @@ def get_shooters():
 	return shooters
 
 def get_num_shooters():
-	#update this
+	print("Traditionally, 3 shooters participate in a truel.")
+	num_shooters = int(input('How many shooters will participate in this truel? '))
 	return num_shooters
 
 def get_shooter():
@@ -178,25 +179,30 @@ def strategy3(shooters, shooter):
 
 	#first two shots
 	#Right now, person 1 shoots first. to adjust, change slice
-	r = random.uniform(0,1) #random number to compare to shooter's hit probability
-	second_best_shooter = get_second_best_shooter(shooters, person)
-	bullets = increment_bullets(person[0])
-	if alive[person[0]] > r: #if shooter wins
-		killed.append(second_best_shooter) #removes best shooter from alive and appends to killed
-		del alive[second_best_shooter]
 
-	while len(killed) < 2 : #two people die, the game is over
-		for person in shooters: 
-			if person[0] in alive: #if person is alive
-				increment_bullets(person[0])
-				r = random.uniform(0,1) #random number to compare to shooter's hit probability
-				best_shooter = get_best_shooter(shooters, person)
-
-				if alive[person[0]] > r: #if shooter wins
-					killed.append(best_shooter) #removes best shooter from alive and appends to killed
-					del alive[best_shooter]
-
-		return list(alive.keys())	
+	if shooters[1] in alive: #if person is alive
+		r = random.uniform(0,1) #random number to compare to shooter's hit probability
+		second_best_shooter = get_second_best_shooter(shooters, shooters[1][0])
+		bullets = increment_bullets(shooters[1][0])
+		if alive[shooters[1][0]] > r: #if shooter wins
+			killed.append(second_best_shooter) #removes second best shooter from alive and appends to killed
+			del alive[second_best_shooter]
+	print('KILLED: ', killed)
+	if len(killed) == 2:
+		bullet_results.append(bullets)
+		return list(alive.keys())
+	else:
+		while len(killed) < 2 : #two people die, the game is over
+			for person in shooters: #person is a tuple
+				if person[0] in alive: #if person is alive
+					r = random.uniform(0,1) #random number to compare to shooter's hit probability
+					best_shooter = get_best_shooter(shooters, person)
+					bullets = increment_bullets(person[0])
+					if alive[person[0]] > r: #if shooter wins
+						killed.append(best_shooter) #removes best shooter from alive and appends to killed
+						del alive[best_shooter]
+		bullet_results.append(bullets)
+		return list(alive.keys())
 
 def conduct_experiment(n_experiments, strategy_choice, shooter):
 	'''Conducts experiment with strategy, first shooter, and number of rounds chosen by user.
@@ -207,7 +213,6 @@ def conduct_experiment(n_experiments, strategy_choice, shooter):
 	global bullets
 	plot_results = []
 
-	i = 0
 
 	for i in range(0, n_experiments):
 		#reset shooters and alive to initial state
@@ -228,8 +233,6 @@ def conduct_experiment(n_experiments, strategy_choice, shooter):
 
 		plot_results = plot_results + winner
 
-		i = i + 1
-
 	return plot_results
 
 def main():		
@@ -243,7 +246,7 @@ def main():
 	plot_results = conduct_experiment(num_experiments, strategy_choice, shooter)
 	experiment_results = list(results.values())
 	plot_results = [1 for x in plot_results if x == 'Shooter 1'] + [2 for x in plot_results if x == 'Shooter 2'] + [3 for x in plot_results if x == 'Shooter 3']
-	print(plot_results)
+	# print(plot_results)
 	
 	results = sorted(results.items()) 
 	for person in results: 
@@ -252,7 +255,7 @@ def main():
 
 	bins = list(range(1, num_people + 2))
         
-
+	print(bullet_results)
 	#Experiment
 	plt.xlabel('Number of Wins per Shooter')
 	plt.ylabel('Wins per Experiment')
