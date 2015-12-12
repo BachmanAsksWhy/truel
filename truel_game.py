@@ -149,69 +149,73 @@ class Truel:
 
 	def check_if_hits_target(self, shooter):
 		r = random.uniform(0,1)
-		print(r)
 		if shooter.get_hit_probability() > r:
 			return True
 		else:
 			return False
 
+	def set_alive(self):
+		for shooter in self.shooters:
+			self.alive.append(shooter)	
+		return self.alive
+
 ##################################
 
 	#Strategy 1: first_shooter shoots in air, everyone then shoots at next most accurate person
 	def strategy1(self):
-		self.alive = copy.deepcopy(self.shooters)
-		start = shooters.index(first_shooter) + 1
-		# print(shooters)
-		for person in self.shooters[start:]: 
-			best_shooter = self.find_next_best_shooter(person, self.shooters)
-			r = random.uniform(0,1)
-			print(r, 'is r in strategy1')
-			if person.get_hit_probability() > r:
-				winner = self.hit_best_shooter(person, best_shooter)
-				best_shooter = self.find_next_best_shooter(person, self.alive)
-			# print(self.hit_count)
-		if self.truel_complete():
-			winner = self.shooters[0]
-			print(winner.get_name(), "wins!")
-		else:
-			winner = self.strategy2(self.shooters)
+		# self.alive = self.set_alive()
+		# start = shooters.index(first_shooter) + 1
+		# # print(shooters)
+		# for person in self.shooters[start:]: 
+		# 	best_shooter = self.find_next_best_shooter(person, self.shooters)
+		# 	r = random.uniform(0,1)
+		# 	print(r, 'is r in strategy1')
+		# 	if person.get_hit_probability() > r:
+		# 		winner = self.hit_best_shooter(person, best_shooter)
+		# 		best_shooter = self.find_next_best_shooter(person, self.alive)
+		# 	# print(self.hit_count)
+		# if self.truel_complete():
+		# 	winner = self.shooters[0]
+		# 	print(winner.get_name(), "wins!")
+		# else:
+		# 	winner = self.strategy2(self.shooters)
 
-		winner = self.shooters[0]
-		return winner
+		# winner = self.shooters[0]
+		# return winner
+		pass
 
 	#Strategy 2: first_shooter shoots at best_shooter
 	def strategy2(self):
 		'''User-selected shooter will shoot at next most accurate shooter.
 		Each shooter will shoot at the most accurate shooter that remains alive. Returns a list of survivors.'''
 		#TODO: shooters ordered by hit_probability low to high
-		print(self.shooters)
-		print(self.killed)
+	
 		while not self.truel_complete():
 			for shooter in self.shooters:
 
 				if shooter not in self.killed:
-					print(shooter.get_name(), 'is alive')
 					self.bullets_shot = self.bullets_shot + 1
 					shooter.bullets_shot = shooter.bullets_shot + 1
 					best_shooter = self.find_next_best_shooter(shooter, self.alive)
 					if self.check_if_hits_target(shooter):
-						print(shooter.get_name(), 'hits', best_shooter.get_name())
-						self.alive = self.hit_best_shooter(best_shooter)
+						self.killed = self.hit_best_shooter(best_shooter)
+
 		winner = self.alive[0]
 		print(winner.get_name(), "wins!")
 		return winner #shooter
 
 	#Strategy 3: first_shooter shoots at second_best_shooter
 	def strategy3(self, shooters, first_shooter):
-		self.alive = copy.deepcopy(self.shooters)
-		result = self.shoot_at_best_shooter(self.shooters[0], self.shooters[1])
+		# self.alive = copy.deepcopy(self.shooters)
+		# result = self.shoot_at_best_shooter(self.shooters[0], self.shooters[1])
 
-		for person in self.shooters[1:]: #skip first element, PersonA 'shoots in air'
-			best_shooter = self.find_next_best_shooter(person, self.shooters)
-			winner = self.shoot_at_best_shooter(person, best_shooter)
-		if not self.truel_complete():
-			winner = self.strategy2(self.shooters)
-		return winner
+		# for person in self.shooters[1:]: #skip first element, PersonA 'shoots in air'
+		# 	best_shooter = self.find_next_best_shooter(person, self.shooters)
+		# 	winner = self.shoot_at_best_shooter(person, best_shooter)
+		# if not self.truel_complete():
+		# 	winner = self.strategy2(self.shooters)
+		# return winner
+		pass
 
 
 	# def resettable(f):
@@ -267,8 +271,13 @@ class TruelExperiment():
 
 	def ask_hit_probability(self, shooter):
 		try:
-			shooter.hit_probability = eval(input("What is %s's hit probability? " %(shooter.name)))
-			return shooter.hit_probability
+			shooter.hit_probability = eval(input("What is %s's hit probability (between 0 and 1, inclusive)? " %(shooter.name)))
+			if shooter.hit_probability < 0:
+				return self.ask_hit_probability(shooter)
+			elif shooter.hit_probability > 1:
+				return self.ask_hit_probability(shooter)
+			else:
+				return shooter.hit_probability
 		except:
 			print("Enter a number.")
 			return self.ask_hit_probability(shooter)
