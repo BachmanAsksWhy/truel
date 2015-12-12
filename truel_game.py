@@ -16,16 +16,16 @@ import expectedBullets
 ################## This method credited to:
 ## http://stackoverflow.com/questions/4866587/pythonic-way-to-reset-an-objects-variables
 def resettable(f):
-    def __init_and_copy__(self, *args):
-        f(self, *args)
-        self.__original_dict__ = copy.deepcopy(self.__dict__)
+	def __init_and_copy__(self, *args):
+		f(self, *args)
+		self.__original_dict__ = copy.deepcopy(self.__dict__)
 
-        def reset(o = self):
-            o.__dict__ = o.__original_dict__
+		def reset(o = self):
+			o.__dict__ = o.__original_dict__
 
-        self.reset = reset
+		self.reset = reset
 
-    return __init_and_copy__
+	return __init_and_copy__
 ##################
 
 
@@ -187,13 +187,15 @@ class Truel:
 		print(self.shooters)
 		print(self.killed)
 		while not self.truel_complete():
-			for shooter in self.shooters: 
+			for shooter in self.shooters:
+
 				if shooter not in self.killed:
 					print(shooter.get_name(), 'is alive')
 					self.bullets_shot = self.bullets_shot + 1
 					shooter.bullets_shot = shooter.bullets_shot + 1
 					best_shooter = self.find_next_best_shooter(shooter, self.alive)
 					if self.check_if_hits_target(shooter):
+						print(shooter.get_name(), 'hits', best_shooter.get_name())
 						self.alive = self.hit_best_shooter(best_shooter)
 		winner = self.alive[0]
 		print(winner.get_name(), "wins!")
@@ -212,6 +214,18 @@ class Truel:
 		return winner
 
 
+	# def resettable(f):
+	# 	def __init_and_copy__(self, *args):
+	# 		f(self, *args)
+	# 		self.__original_dict__ = copy.deepcopy(self.__dict__)
+
+	# 		def reset(o = self):
+	# 			o.__dict__ = o.__original_dict__
+
+	# 		self.reset = reset
+
+	# 	return __init_and_copy__
+	
 ###############################
 ###############################
 
@@ -349,8 +363,9 @@ class TruelExperiment():
 				# print(first_shooter.get_name(), "shoots at the second most accurate shooter!")
 				winner = t.strategy3()
 
-			self.results = self.results.append(winner.number)
-			self.bullet_results = self.bullet_results.append(winner)
+			self.results.append(winner.number)
+			self.bullet_results.append(winner)
+
 
 
 	def main(self):
