@@ -1,0 +1,78 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from operator import add
+import pdb
+
+fig = plt.figure()
+ax = plt.axes()
+
+
+#pdb.set_trace()
+minX=0
+
+y1 = [1, 3, 1, 6, 6]
+y2 = [0, 4, 1, 11, 3]
+y3 = [1, 0, 1, 2, 1]
+totBullets = [sum(x) for x in zip(y1, y2, y3)]
+print(totBullets)
+
+xLength = []
+rounds = len(totBullets)
+
+lines_with_annotation = []
+
+
+for i in range(rounds):
+    point, = plt.plot(i, totBullets[i], 'o', markersize=4)
+    xLength.append(i)
+    print(xLength)
+    
+        
+    annotation = ax.annotate("Total Bullets: %s" %totBullets[i],
+        xy=(i, totBullets[i]), xycoords='data', #arrow points to the coords
+        xytext=((.3+ minX),  max(totBullets)+1), textcoords='data',
+        horizontalalignment="left",
+        bbox=dict(boxstyle="round", facecolor="w", 
+                  edgecolor="0.5", alpha=0.9)
+        )
+    
+    vLine = ax.axvline(x = i, linewidth=1, color='r')
+    hLine = ax.axhline(y = totBullets[i], linewidth=1, color='y')
+    #xyLine = (vLine, hLine)
+                             
+        
+    # by default, disable the annotation visibility
+    annotation.set_visible(False)
+    vLine.set_visible(False)
+    hLine.set_visible(False)
+
+    lines_with_annotation.append([vLine, hLine, annotation])
+
+    
+
+def on_move(event):
+    visibility_changed = False
+    for vLine, hLine, annotation in lines_with_annotation:
+        should_be_visible = (annotation.contains(event)[0] == True)
+        should_be_visible = (vLine.contains(event)[0] == True)
+        should_be_visible = (hLine.contains(event)[0] == True)
+
+        if should_be_visible != annotation.get_visible():
+            visibility_changed = True
+            annotation.set_visible(should_be_visible)
+            vLine.set_visible(should_be_visible)
+            hLine.set_visible(should_be_visible)
+
+    if visibility_changed:        
+        plt.draw()
+
+on_move_id = fig.canvas.mpl_connect('motion_notify_event', on_move)
+print(on_move_id)
+
+
+xLims = plt.xlim(-.05, 1.01*i)
+yLims = plt.ylim(0.5, max(totBullets) + 1)
+
+
+plt.stackplot(xLength, y1, y2, y3, colors=['m','c','y'])
+plt.show()
