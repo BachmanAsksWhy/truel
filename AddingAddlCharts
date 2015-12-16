@@ -1,0 +1,620 @@
+##BLENDING THE CODE
+## Adding charts, but need to confer with you
+##My code is denoted with #--->
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+import random
+import sys
+import copy
+import operator
+import pprint as pprint
+import expectedBullets
+
+
+
+class Chart:
+	def __init__(self):
+		return
+
+	def get_x(self, num_shooters):
+		x = list(range(1, num_shooters + 2))
+		return x
+	        
+	# def get_y(self, results):
+		
+
+	def plot_chart(self, num_shooters, results, x):
+
+
+		#Experiment
+		plt.xlabel('Shooter Number')
+		plt.ylabel('# Wins per Experiment')
+		plt.title('Histogram of Truel Experiment, %d Shooters' %num_shooters)
+
+		plt.hist(results, x)
+		plt.show()
+
+ #----> ##below in progress
+        def annotateXY(self, y1, y2, y3)
+
+            fig = plt.figure()
+            ax = plt.axes()
+            totBullets = [sum(x) for x in zip(y1, y2, y3)]
+            xLength = []
+            
+            for i in range(rounds):
+                
+                point, = plt.plot(i, totBullets[i], 'o', markersize=3)
+
+                #test length of list for x-axis; can be removed after test
+                xLength.append(i)
+                print(xLength)
+                
+                annotation = ax.annotate("Total Bullets: %s" %totBullets[i],
+                    #arrow points to the coords of the peak of (x,y)
+                    xy=(i, totBullets[i]), xycoords='data',         
+                    xytext=((.3+ minX),  max(totBullets)+1), textcoords='data',
+                    horizontalalignment="left",
+                    bbox=dict(boxstyle="round", facecolor="w", 
+                              edgecolor="0.5", alpha=0.9)
+                    )
+
+                #ephemeral vert and horiz lines
+                vLine = ax.axvline(x = i, linewidth=2, color='r')   
+                hLine = ax.axhline(y = totBullets[i], linewidth=2, color='r')     
+                                         
+                # by default, disable the annotation visibility
+                annotation.set_visible(False)
+                vLine.set_visible(False)
+                hLine.set_visible(False)
+
+                return l_w_a = lines_with_annotation.append([vLine, hLine, annotation])
+
+ #---->
+        def on_move(self, annotateXY, event):
+            visibility_changed = False
+            for vLine, hLine, annotation in l_w_a:  #<---may be a problem
+                    should_be_visible = (annotation.contains(event)[0] == True)
+                    should_be_visible = (vLine.contains(event)[0] == True)
+                    should_be_visible = (hLine.contains(event)[0] == True)
+
+                    if should_be_visible != annotation.get_visible():
+                        visibility_changed = True
+                        annotation.set_visible(should_be_visible)
+                        vLine.set_visible(should_be_visible)
+                        hLine.set_visible(should_be_visible)
+
+            if visibility_changed:        
+                plt.draw()
+
+ #---->	
+        def createStackPlot(self, #trials, #y1_shotList, y2_shotList, y3_shotList)
+            # L & R side boundaries
+            xLims = plt.xlim(-.05, (i +.05))
+            yLims = plt.ylim(0, max(totBullets) + 1)
+
+
+            #fig, ax = plt.subplots()
+            plt.stackplot(xLength, y1, y2, y3, colors=['m','c','y'])
+            plt.show()
+
+            
+###############################
+class Shooter:
+	def __init__(self, hit_probability = 1.0, name = ""):
+		self.hit_probability = hit_probability
+		self.is_alive = True
+		self.name = ""
+		self.bullets_shot = 0
+		self.number = 0
+
+	def get_is_alive(self):
+		return self.is_alive
+
+	def get_hit_probability(self):
+		return self.hit_probability
+
+	def get_name(self):
+		return self.name
+
+	def get_bullets_shot(self):
+		return self.bullets_shot
+
+	def get_wins(self):
+		return self.wins
+
+
+##############################
+
+	def is_shot(self):
+		self.is_alive = False
+
+
+###############################
+
+
+class Truel:
+	def __init__(self, shooters, strategy, starter):
+		self.hit_count = 0
+		self.bullets_shot = 0
+		self.shooters = shooters
+		self.num_shooters = len(shooters)
+		self.strategy = strategy
+		self.first_shooter = starter #shooter object
+		self.alive = self.shooters[:] #list of shooter objects
+		self.killed = [] #list of shooter objects
+		self.bullet_results = [] #list of shooter objects
+		self.results = [] #list of ints
+
+	def reset(self, shooters):
+		self.hit_count = 0
+		self.bullets_shot = 0
+		self.alive = self.shooters[:] #list of shooter objects
+		self.num_shooters = len(self.shooters)
+		self.killed = [] #list of shooter objects
+		self.shooters = shooters
+		for shooter in self.shooters:
+			shooter.bullets_shot = 0
+
+
+################################### get functions
+
+	def get_hit_count(self):
+		return self.hit_count
+
+	def get_strategy(self):
+		return self.strategy
+
+	def get_shots_fired(self):
+		return self.shots_fired
+
+	def get_shooters(self):
+		return self.shooters
+
+	def get_num_shooters(self):
+		return self.num_shooters
+
+	def get_alive(self):
+		return self.alive
+
+	def get_killed(self):
+		return self.killed
+
+	def get_bullet_results(self):
+		return self.bullet_results
+
+	def get_bullets_shot(self):
+		return self.bullets_shot
+
+	def get_results(self):
+		return self.results
+
+
+
+##################################
+
+	def truel_complete(self):
+		return self.hit_count == 2
+
+	# def find_next_best_shooter(self, person, shooters):
+	# 	#TODO handle scenario where all shooters have the same probability
+	# 	#person is an object, shooters is a list of objects
+	# 	shooters_by_accuracy = {}
+	# 	try:
+	# 		for shooter in shooters:
+	# 			#adds shooters to dictionary with hit probability as keys
+	# 			shooters_by_accuracy[shooter.get_hit_probability()] = shooter
+	# 			best_shooter = shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+	# 		if person == best_shooter:
+	# 			#if the person shooting is the best shooter, assigns next best shooter
+	# 			del shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+	# 			best_shooter = shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+	# 		return best_shooter
+	# 	except ValueError:
+	# 		pass
+
+	def find_next_best_shooter(self, person, shooters):
+		'''Finds the most accurate living shooter who is not the person shooting. Returns the best shooter.'''
+		#person is an object, shooters is a list of objects
+		sorted_by_best_accuracy = sorted(shooters, key=lambda shooter: shooter.hit_probability, reverse=True)
+		i = 0
+		best = sorted_by_best_accuracy[i]
+		while person == best:
+			i = i + 1
+			best = sorted_by_best_accuracy[i]
+		return best
+
+
+
+	# def find_second_best(self, person, shooters):
+	# 	#person is an object, shooters is a list of objects
+
+	# 	shooters_by_accuracy = {}
+	# 	try:
+	# 		for shooter in shooters:
+	# 			#adds shooters to dictionary with hit probability as keys
+	# 			shooters_by_accuracy[shooter.get_hit_probability()] = shooter
+	# 			best_shooter = shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+	# 		del shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+	# 		for shooter in shooters:
+	# 			#adds shooters to dictionary with hit probability as keys
+	# 			shooters_by_accuracy[shooter.get_hit_probability()] = shooter
+	# 			second_best_shooter = shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+	# 		if person == second_best_shooter:
+	# 			#if the person shooting is the best shooter, assigns next best shooter
+	# 			del shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+	# 			second_best_shooter = shooters_by_accuracy[max(shooters_by_accuracy.keys())]
+
+	# 		print(second_best_shooter.name, second_best_shooter.number)	
+	# 		return second_best_shooter
+	# 	except ValueError:
+	# 		pass
+		
+
+	def find_second_best_shooter(self, person, shooters):
+		'''Finds the most accurate living shooter who is not the person shooting. Returns the best shooter. Used in Strategy 3.'''
+		removed_best = [shooter for shooter in shooters if shooter.hit_probability != max(shooter.hit_probability for shooter in shooters)]
+		second_best_shooter = self.find_next_best_shooter(person, removed_best)
+		return second_best_shooter
+
+
+	def hit_best_shooter(self, best_shooter):
+		best_shooter.is_shot()
+		self.hit_count = self.hit_count + 1 #increment total hit count
+		self.killed.append(best_shooter)
+		del self.alive[self.alive.index(best_shooter)]
+		return self.killed
+
+	def check_if_hits_target(self, shooter):
+		r = random.uniform(0,1)
+		if shooter.get_hit_probability() > r:
+			return True
+		else:
+			return False
+
+	def set_alive(self):
+		for shooter in self.shooters:
+			self.alive.append(shooter)	
+		return self.alive
+
+##################################
+
+	#Strategy 1: first_shooter shoots in air, everyone then shoots at next most accurate person
+	def strategy1(self):
+		'''User-selected shooter will shoot in the air. The next shooter will shoot at the next most 
+		accurate shooter that remains alive and so one. Returns a list of survivors.'''
+		for shooter in self.shooters[1:]:
+			if shooter not in self.killed:
+				self.bullets_shot = self.bullets_shot + 1
+				shooter.bullets_shot = shooter.bullets_shot + 1
+				best_shooter = self.find_next_best_shooter(shooter, self.alive)
+				if self.check_if_hits_target(shooter):
+					self.killed = self.hit_best_shooter(best_shooter)
+
+		while not self.truel_complete():
+			for shooter in self.shooters:
+				if shooter not in self.killed:
+					self.bullets_shot = self.bullets_shot + 1
+					shooter.bullets_shot = shooter.bullets_shot + 1
+					best_shooter = self.find_next_best_shooter(shooter, self.alive)
+					if self.check_if_hits_target(shooter):
+						self.killed = self.hit_best_shooter(best_shooter)
+
+		winner = self.alive[0]
+		return winner #shooter
+
+	#Strategy 2: first_shooter shoots at best_shooter
+	def strategy2(self):
+		'''User-selected shooter will shoot at next most accurate shooter.
+		Each shooter will shoot at the most accurate shooter that remains alive. Returns a list of survivors.'''
+	
+		while not self.truel_complete():
+			for shooter in self.shooters:
+
+				if shooter not in self.killed:
+					self.bullets_shot = self.bullets_shot + 1
+					shooter.bullets_shot = shooter.bullets_shot + 1
+					best_shooter = self.find_next_best_shooter(shooter, self.alive)
+					if self.check_if_hits_target(shooter):
+						self.killed = self.hit_best_shooter(best_shooter)
+
+		winner = self.alive[0]
+		return winner #shooter
+
+	#Strategy 3: first_shooter shoots at second_best_shooter
+	def strategy3(self, shooters, first_shooter):
+		'''User-selected shooter will shoot at second most accurate shooter.
+		Each shooter will shoot at the most accurate shooter that remains alive. Returns a list of survivors.'''
+		first_cycle_remainder = [shooter for shooter in shooters if shooter != first_shooter]
+
+		if first_shooter not in self.killed:
+			self.bullets_shot = self.bullets_shot + 1
+			first_shooter.bullets_shot = first_shooter.bullets_shot + 1
+			second_best_shooter = self.find_second_best_shooter(first_shooter, self.alive)
+			if self.check_if_hits_target(first_shooter):
+				self.killed = self.hit_best_shooter(second_best_shooter)
+
+		for shooter in first_cycle_remainder:
+			if shooter not in self.killed:
+				self.bullets_shot = self.bullets_shot + 1
+				shooter.bullets_shot = shooter.bullets_shot + 1
+				best_shooter = self.find_next_best_shooter(shooter, self.alive)
+				if self.check_if_hits_target(shooter):
+					self.killed = self.hit_best_shooter(best_shooter)
+
+		while not self.truel_complete():
+			for shooter in self.shooters:
+				if shooter not in self.killed:
+					self.bullets_shot = self.bullets_shot + 1
+					shooter.bullets_shot = shooter.bullets_shot + 1
+					best_shooter = self.find_next_best_shooter(shooter, self.alive)
+					if self.check_if_hits_target(shooter):
+						self.killed = self.hit_best_shooter(best_shooter)
+
+		winner = self.alive[0]
+		return winner #shooter
+
+		# self.alive = copy.deepcopy(self.shooters)
+		# result = self.shoot_at_best_shooter(self.shooters[0], self.shooters[1])
+
+		# for person in self.shooters[1:]: #skip first element, PersonA 'shoots in air'
+		# 	best_shooter = self.find_next_best_shooter(person, self.shooters)
+		# 	winner = self.shoot_at_best_shooter(person, best_shooter)
+		# if not self.truel_complete():
+		# 	winner = self.strategy2(self.shooters)
+		# return winner
+
+
+
+###############################
+###############################
+
+
+class TruelExperiment():
+	def __init__(self):
+		self.num_experiments = 0
+		self.results = []
+		self.bullet_results = {}
+		self.shooters = []
+		self.num_shooters = 0
+		self.strategy = 0
+
+################
+
+	def get_num_experiments(self):
+		return self.num_experiments
+
+	def get_results(self):
+		return self.results
+
+	def get_bullet_results(self):
+		return self.bullet_results
+
+	def get_num_shooters(self):
+		return self.num_shooters
+
+	def get_strategy(self):
+		return self.strategy
+
+	def get_shooters(self):
+		return self.shooters
+
+
+################ input functions
+	# def ask_strategy(self, starter, best_shooter, second_best_shooter):
+	def ask_strategy(self):
+		question = """There are three possible strategies:
+Strategy 1: {0} shoots in air
+Strategy 2: {0} shoots at {1}
+Strategy 3: {0} shoots at {2}
+	Strategy choice: """.format("First shooter", "Best shooter", "Second Best Shooter")
+
+		try:
+			answer = int(input(question))
+			return answer
+		except:
+			print("Enter the corresponding number - 1, 2, or 3 - to your strategy selection.\n")
+			return self.ask_strategy()					
+		
+		
+	def ask_name(self, shooter):
+		try:
+			shooter.name = input("What is the name of Shooter %d? " %(shooter.number))
+			return shooter.name
+		except:
+			return self.ask_name(shooter)
+
+	def ask_hit_probability(self, shooter):
+		try:
+			shooter.hit_probability = eval(input("What is %s's hit probability (between 0 and 1, inclusive)? " %(shooter.name)))
+			if shooter.hit_probability < 0:
+				return self.ask_hit_probability(shooter)
+			elif shooter.hit_probability > 1:
+				return self.ask_hit_probability(shooter)
+			else:
+				return shooter.hit_probability
+		except:
+			print("Enter a number.")
+			return self.ask_hit_probability(shooter)
+
+	def ask_num_experiments(self):
+		try:
+			self.num_experiments = int(input('How many rounds of shooting would you like in this truel experiment? '))	
+			print("\n")
+			return self.num_experiments
+		except:
+			print("Enter an integer.")
+			return self.ask_num_experiments()
+
+	def ask_first_shooter(self):
+		try:
+			for shooter in self.shooters:
+				print("%d:" %(shooter.number), shooter.get_name(), " - Hit Probability: %f" %(shooter.get_hit_probability()))
+			first_shooter = int(input("Which shooter fires first? "))
+			print("\n")
+			return first_shooter
+		except:
+			print("Enter an integer.")
+			return self.ask_first_shooter()
+
+	def ask_num_shooters(self):
+		try:
+			print("Traditionally, 3 shooters participate in a truel.")
+			self.num_shooters = int(input('How many shooters will participate in this truel? '))
+			print("\n")
+			return self.num_shooters
+		except:
+			print("Enter an integer.")
+			return self.ask_num_shooters()
+
+	def ask_about_shooters(self):
+		try:
+			for number in range(0, self.num_shooters):
+				self.shooters.append(Shooter())
+			i = 1
+			for shooter in self.shooters:
+				shooter.number = i
+				try:
+					shooter.name = self.ask_name(shooter)
+				except:
+					shooter.name = self.ask_name(shooter)
+				try:
+					shooter.hit_probability = self.ask_hit_probability(shooter)
+				except:
+					print("Enter a number.")
+					shooter.hit_probability = self.ask_hit_probability(shooter)
+				i = i + 1
+			return self.shooters
+		except:
+			return self.ask_about_shooters()
+
+	def print_results(self, results, shooters):
+		results = sorted(results)
+		print("# Wins per Shooter")
+		for shooter in shooters:
+			print("Shooter {0}: {1}".format(shooter.get_name(), self.results.count(shooter.number))) 
+
+
+		# print("RESULTS:", te.results)
+
+		# print("BULLET RESULTS:")
+		# #print(te.bullet_results)
+		# for shooter_int in te.bullet_results:
+		# 	print("Shooter hit probability:")
+		# 	print(shooter_int, ":", te.bullet_results[shooter_int])
+
+	def ask_replay(self):
+		replay = input("\nWould you like to play again? Enter yes or no: ")
+
+		if replay[0].lower().strip() == 'y':
+			return self.main()
+		elif replay[0].lower().strip() == 'n':
+			return sys.exit(0)
+		else:
+			self.main()
+
+#####################
+
+	def know_strategy(self, answer):
+		if answer == '':
+			return self.ask_strategy()
+		elif answer == 1:
+			self.strategy = 1
+			return self.strategy
+		elif answer == 2:
+			self.strategy = 2
+			return self.strategy
+		elif answer == 3:
+			self.strategy = 3
+			return self.strategy
+		else:
+			return self.ask_strategy()
+
+	def know_starter(self, first_shooter): #first_shooter is an int
+		starter = self.shooters[first_shooter - 1]
+		return starter #starter is a shooter
+
+	def conduct_experiment(self):
+		self.num_experiments = self.ask_num_experiments()
+
+		t = Truel(self.shooters, self.strategy, self.starter)
+
+		best_shooter = t.find_next_best_shooter(self.starter, t.shooters)
+		second_best_shooter = t.find_second_best_shooter(self.starter, t.shooters)
+		
+		for experiment in range(0, self.num_experiments):
+
+			if self.strategy == 1:
+				winner = None
+				# print(first_shooter.get_name(), "shoots in the air!")
+				winner = t.strategy1()
+
+			if self.strategy == 2:
+				winner = None
+				# print(first_shooter.get_name(), "shoots at the next most accurate shooter!")
+				winner = t.strategy2()
+
+			if self.strategy == 3:
+				winner = None
+				# print(first_shooter.get_name(), "shoots at the second most accurate shooter!")
+				winner = t.strategy3(t.shooters, self.starter)
+
+			self.results.append(winner.number)
+
+			for shooter in t.shooters:
+				self.bullet_results[shooter.number][0].append(shooter.bullets_shot)
+
+			t.reset(self.shooters) 	#resets truel values for each round 
+
+		return self.results
+
+
+	def main(self):
+		#TODO handle infinite loop by limiting max number of rounds
+		#TODO fix second_best_shooter method
+
+		te = TruelExperiment()
+
+		te.num_shooters = te.ask_num_shooters() #int
+		te.shooters = te.ask_about_shooters() #list of shooter objects
+		first_shooter = te.ask_first_shooter() #int
+		te.starter = te.know_starter(first_shooter) #shooter object
+		strategy_choice = te.ask_strategy() #int
+		te.strategy = te.know_strategy(strategy_choice)
+
+		#create bullet_results dictionary
+		for shooter in te.shooters:
+			te.bullet_results[shooter.number] = [[],shooter.hit_probability]
+
+		#order by hit probability, low to high
+		te.shooters = sorted(te.shooters, key=lambda shooter: shooter.hit_probability, reverse=False) 
+
+		#conduct experiment
+		te.results = te.conduct_experiment() 
+
+		#output and ask to replay
+		te.print_results(te.results, te.shooters)
+
+		#create chart
+		print("Close chart to proceed.")
+		c = Chart()
+		x_width = c.get_x(te.num_shooters)
+		c.plot_chart(te.num_shooters, te.results, x_width)
+
+         #-->   #annotation events on stackplot
+                
+                c.annotateXY(y1, y2, y3) #need vars to imput into method
+		on_move_id = c.fig.canvas.mpl_connect('motion_notify_event', on_move) #<--may be problematic
+
+		c.createStackPlot(xAXIS_var, y1, y2, y3)
+		
+                #TODO need to calculate probability for E(X)
+			
+		te.ask_replay()
+
+
+if __name__ == "__main__":
+	TruelExperiment().main()
